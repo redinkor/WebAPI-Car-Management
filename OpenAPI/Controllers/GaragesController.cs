@@ -128,6 +128,31 @@ namespace OpenAPI.Controllers
 
             return NoContent();
         }
+
+        // GET: api/garages/report/{garageId}/{date}
+        [HttpGet("report/{garageId}/{date}")]
+        public async Task<ActionResult<GarageDailyAvailabilityReportDTO>> GetDailyAvailabilityReport(long garageId, DateTime date)
+        {
+            var garage = await _context.Garages.FindAsync(garageId);
+            if (garage == null)
+            {
+                return NotFound("Garage not found.");
+            }
+
+            // Counting maintenance requests for the specified date
+            var requestsCount = await _context.MaintenanceRequests
+                .Where(m => m.garageId == garageId && m.scheduledDate.Date == date.Date)
+                .CountAsync();
+
+            var report = new GarageDailyAvailabilityReportDTO
+            {
+                date = date,
+                requests = requestsCount,
+                availableCapacity = garage.capacity - requestsCount
+            };
+
+            return Ok(report);
+        }
     }
 }
 

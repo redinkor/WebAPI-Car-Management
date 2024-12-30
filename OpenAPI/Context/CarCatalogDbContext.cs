@@ -13,14 +13,14 @@ namespace OpenAPI.Context
 
         public DbSet<Car> Cars { get; set; }
         public DbSet<Garage> Garages { get; set; }
-
+        public DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Car>()
-                .HasOne(c => c.Garage) // Указывает, что каждая машина имеет один гараж
-                .WithMany(g => g.Cars) // Указывает, что один гараж может содержать много машин
-                .HasForeignKey(c => c.GarageId); // Указывает на внешний ключ в таблице Car
+                .HasOne(c => c.Garage) 
+                .WithMany(g => g.Cars) 
+                .HasForeignKey(c => c.GarageId); 
         }
     }
 }
